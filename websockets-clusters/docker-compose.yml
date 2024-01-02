@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    ports:
+      - 6379:6379
+    labels:
+      - traefik.enable=false
+
+  client:
+    image: nginx:1.23.3-alpine
+    container_name: client
+    ports:
+      - 8080:80
+    volumes:
+      - ./public:/usr/share/nginx/html
+    labels:
+      - traefik.enable=false
+
+  traefik:
+    image: traefik:2.10
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 3000:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  server:
+    build: .
+    image: server
+    volumes:
+      - .:/usr/app
+    labels:
+      - "traefik.http.routers.server.rule=PathPrefix(`/`)"
+      - "traefik.http.services.server.loadBalancer.sticky.cookie.name=server_id"
+      - "traefik.http.services.server.loadBalancer.sticky.cookie.httpOnly=true"
+
+  # server2:
+  #   build: .
+  #   image: server
+  #   volumes:
+  #     - .:/usr/app
+  #   labels:
+  #     - "traefik.http.routers.server.rule=PathPrefix(`/`)"
+  #     - "traefik.http.services.server.loadBalancer.sticky.cookie.name=server_id"
+  #     - "traefik.http.services.server.loadBalancer.sticky.cookie.httpOnly=true"

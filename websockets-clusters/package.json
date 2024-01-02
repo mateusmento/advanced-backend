@@ -1,0 +1,25 @@
+{
+  "name": "websockets-clusters",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index",
+    "https-ca": "mkcert create-ca --key ./https/ca.key --cert ./https/ca.crt",
+    "https-cert": "mkcert create-cert --ca-key ./https/ca.key --ca-cert ./https/ca.crt --key ./https/websockets.clusters.key --cert ./https/websockets.clusters.crt --domains api.websockets.clusters"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@socket.io/redis-adapter": "^8.2.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "redis": "^4.6.7",
+    "socket.io": "^4.7.1"
+  },
+  "devDependencies": {
+    "mkcert": "^1.5.1",
+    "nodemon": "^3.0.1"
+  }
+}

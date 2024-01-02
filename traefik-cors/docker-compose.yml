@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  client:
+    image: nginx:1.23.3-alpine
+    container_name: client
+    ports:
+      - 8080:80
+    volumes:
+      - ./public:/usr/share/nginx/html
+    labels:
+      - traefik.enable=false
+  server:
+    build: .
+    image: server
+    volumes:
+      - .:/usr/app
+    labels:
+      - 'traefik.http.routers.my-server.rule=PathPrefix(`/`)'
+  traefik:
+    image: traefik:2.10
+    container_name: traefik
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 3000:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
